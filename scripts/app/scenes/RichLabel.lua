@@ -34,12 +34,12 @@ function RichLabel:init(params)
 	local fontColor = params.fontColor or ccc3(255, 255, 255)
 	local dimensions = params.dimensions or CCSize(0, 0) --默认无限扩展
 
-	do --test
-		local bgSprite = CCSprite:createWithTexture(nil, CCRect(0, 0, dimensions.width, dimensions.height))
-		bgSprite:setAnchorPoint(ccp(0, 1))
-		bgSprite:setColor(ccc3(255, 0, 0))
-		self:addChild(bgSprite)
-	end
+	-- do --test
+	-- 	local bgSprite = CCSprite:createWithTexture(nil, CCRect(0, 0, dimensions.width, dimensions.height))
+	-- 	bgSprite:setAnchorPoint(ccp(0, 1))
+	-- 	bgSprite:setColor(ccc3(255, 0, 0))
+	-- 	self:addChild(bgSprite)
+	-- end
 
     self._fontName = fontName
     self._fontSize = fontSize
@@ -164,7 +164,7 @@ function RichLabel:createSprite(parseArray)
 		if #textArr > 0 then --创建文字
 			local fontName = dic.fontName or self._fontName
 			local fontSize = dic.fontSize or self._fontSize
-			local fontColor = dic.color or self._fontColor
+			local fontColor = dic.fontColor or self._fontColor
 			for j, word in ipairs(textArr) do
 				local label = CCLabelTTF:create(word, fontName, fontSize)
 				label:setColor(fontColor)

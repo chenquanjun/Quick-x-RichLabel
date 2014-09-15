@@ -4,9 +4,9 @@ local MainScene = class("MainScene", function()
 end)
 
 function MainScene:ctor()
-	
+
 	local RichLabel = require("app.scenes.RichLabel")
-	local str = "[image=wsk1.png][/image][fontColor=f75d85 fontSize=20]营业时间[/fontColor][fontColor=fefefe]倒计时完毕，就要[/fontColor][fontColor=f75d85]结束经营[/fontColor][fontColor=fefefe]。[/fontColor][fontColor=f75d85 fontSize=20]营业时间[/fontColor][fontColor=fefefe]倒计时完毕，就要[/fontColor][fontColor=f75d85]结束经营[/fontColor][fontColor=fefefe]。[/fontColor]"
+	local str = "[image=wsk1.png][/image][fontColor=f75d85 fontSize=20]so great[/fontColor][fontColor=fefefe]这是测试代码[/fontColor][fontColor=f75d85]看看如何 see[/fontColor][fontColor=fefefe]。[/fontColor]"
 	local params = {
 						text = str,
 						dimensions = CCSize(200, 200)
