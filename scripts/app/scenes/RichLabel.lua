@@ -14,7 +14,7 @@ RichLabel._fontColor = nil
 	文字 
 	fontName  : font name
 	fontSize  : number
-	fontColor : ccc3(r,g,b)
+	fontColor : ccc3(r,g,b) 字符串用十六进制，设置用ccc3
 
 	图片
 	image : "xxx.png"
@@ -51,7 +51,7 @@ function RichLabel:init(params)
 	--将字符串拆分成一个个字符
 	self:formatString(parseArray)
 
-	dump(parseArray)
+	-- dump(parseArray)
 
 	--创建精灵
 	local spriteArray = self:createSprite(parseArray)

@@ -6,7 +6,11 @@ end)
 function MainScene:ctor()
 
 	local RichLabel = require("app.scenes.RichLabel")
-	local str = "[image=wsk1.png][/image][fontColor=f75d85 fontSize=20]so great[/fontColor][fontColor=fefefe]这是测试代码[/fontColor][fontColor=f75d85]看看如何 see[/fontColor][fontColor=fefefe]。[/fontColor]"
+	local str = "[image=wsk1.png][/image]" --图片
+	str = str.."[fontColor=f75d85 fontSize=20]hello world[/fontColor][fontColor=fefefe]这是测试代码[/fontColor]" --文字 颜色 大小
+	str = str.."[fontColor=f75d85 fontName=ArialRoundedMTBold]看看效果如何[/fontColor]" --文字 颜色，字体
+	str = str.."[fontColor=fefefe]!!!!![/fontColor]" --文字 颜色
+	str = str.."[image=wsk1.png scale=1.3][/image]" --图片
 	local params = {
 						text = str,
 						dimensions = CCSize(200, 200)
