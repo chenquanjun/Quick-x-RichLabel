@@ -4,6 +4,21 @@ local RichLabel = class("RichLabel", function()
     return node
 end)	
 
+--[[ 公共方法
+	创建方法 create
+
+	set:
+	设置文字方法 setLabelString
+	设置尺寸方法 setDimensions
+
+	get:
+	获得文字实际占用尺寸 getLabelSize
+]]--
+
+--[[-------------------
+    -------value-----
+    ---------------------]]
+
 RichLabel.__index      = RichLabel
 RichLabel._fontName = nil
 RichLabel._fontSize = nil
@@ -14,46 +29,34 @@ RichLabel._textStr = nil
 RichLabel._maxWidth = nil
 RichLabel._maxHeight = nil
 
---目前支持参数
+--[[-------------------
+    ---Public Method-----
+    ---------------------]]
+
+--创建方法 
 --[[
-	文字 
-	fontName  : font name
-	fontSize  : number
-	fontColor : ccc3(r,g,b) 字符串用十六进制，通用设置用ccc3
+	local params = {
+		fontName = "Arial",
+		fontSize = 30,
+		fontColor = ccc3(255, 0, 0),
+		dimensions = CCSize(300, 200),
+		text = [fontColor=f75d85 fontSize=20]hello world[/fontColor],
+	}
 
-	图片
-	image : "xxx.png"
-	scale : number
+	text 目前支持参数
+			文字 
+			fontName  : font name
+			fontSize  : number
+			fontColor : 十六进制
+
+			图片
+			image : "xxx.png"
+			scale : number
 ]]--
-
 function RichLabel:create(params)
 	local ret = RichLabel.new()
-	ret:init(params)
+	ret:init_(params)
 	return ret
-end
-
-function RichLabel:init(params)
-	local text = params.text
-
-	--如果text的格式指定字体则使用指定字体，否则使用默认字体
-	--大小和颜色同理
-	local fontName = params.fontName or "Arial" --默认字体
-	local fontSize = params.fontSize or 30 --默认大小
-	local fontColor = params.fontColor or ccc3(255, 255, 255)
-	local dimensions = params.dimensions or CCSize(0, 0) --默认无限扩展
-
-	self._dimensions = dimensions
-
-	--装文字和图片精灵
-	local containLayer = display.newLayer()
-	self:addChild(containLayer)
-	self._containLayer = containLayer
-
-    self._fontName = fontName
-    self._fontSize = fontSize
-    self._fontColor = fontColor
-   
-    self:setLabelString(text)
 end
 
 --设置text
@@ -82,7 +85,7 @@ function RichLabel:setLabelString(text)
 	self:adjustPosition_()
 end
 
---设置大小
+--设置尺寸
 function RichLabel:setDimensions(dimensions)
 	self._containLayer:setContentSize(dimensions)
 	self._dimensions = dimensions
@@ -90,17 +93,46 @@ function RichLabel:setDimensions(dimensions)
 	self:adjustPosition_()
 end
 
+--获得label尺寸
 function RichLabel:getLabelSize()
 	local width = self._maxWidth or 0
 	local height = self._maxHeight or 0
 	return CCSize(width, height)
 end
 
+--[[-------------------
+    ---Private Method-----
+    ---------------------]]
+
+function RichLabel:init_(params)
+	--如果text的格式指定字体则使用指定字体，否则使用默认字体
+	--大小和颜色同理
+	local fontName   = params.fontName or "Arial" --默认字体
+	local fontSize   = params.fontSize or 30 --默认大小
+	local fontColor  = params.fontColor or ccc3(255, 255, 255) --默认白色
+	local dimensions = params.dimensions or CCSize(0, 0) --默认无限扩展，即沿着x轴往右扩展
+	local text       = params.text
+
+	--装文字和图片精灵
+	local containLayer = display.newLayer()
+	self:addChild(containLayer)
+	
+    self._fontName     = fontName
+    self._fontSize     = fontSize
+    self._fontColor    = fontColor
+    self._dimensions   = dimensions
+    self._containLayer = containLayer
+   
+    self:setLabelString(text)
+end
+
+
+--获得每个精灵的尺寸
 function RichLabel:getSizeOfSprites_(spriteArray)
 	local widthArr = {} --宽度数组
 	local heightArr = {} --高度数组
 
-	--精灵的大小
+	--精灵的尺寸
 	for i, sprite in ipairs(spriteArray) do
 		local contentSize = sprite:getContentSize()
 		widthArr[i] = contentSize.width
@@ -110,6 +142,7 @@ function RichLabel:getSizeOfSprites_(spriteArray)
 
 end
 
+--获得每个精灵的位置
 function RichLabel:getPointOfSprite_(widthArr, heightArr, dimensions)
 	local totalWidth = dimensions.width
 	local totalHight = dimensions.height
@@ -204,7 +237,7 @@ function RichLabel:getPointOfSprite_(widthArr, heightArr, dimensions)
 	return pointArrX, pointArrY
 end
 
---调整位置
+--调整位置（设置文字和尺寸都会触发此方法）
 function RichLabel:adjustPosition_()
 
 	local spriteArray = self._spriteArray
@@ -223,7 +256,8 @@ function RichLabel:adjustPosition_()
 		sprite:setPosition(pointArrX[i], pointArrY[i])
 	end
 end
-  
+ 
+--创建精灵
 function RichLabel:createSprite_(parseArray)
 	local spriteArray = {}
 
@@ -253,6 +287,7 @@ function RichLabel:createSprite_(parseArray)
 	return spriteArray
 end
 
+--将字符串转换成一个个字符
 function RichLabel:formatString_(parseArray)
 	for i,dic in ipairs(parseArray) do
 		local text = dic.text
@@ -402,7 +437,5 @@ function RichLabel:stringToChar_(str)
     end
 	return list, len
 end
-
-
 
 return RichLabel
