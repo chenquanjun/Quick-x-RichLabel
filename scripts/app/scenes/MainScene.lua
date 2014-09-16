@@ -29,9 +29,10 @@ function MainScene:test()
 
 	do --大小测试
 		local label = self:addTestLabel("大小测试", function ()
-			testLabel:setDimensions(CCSize(math.random(10, 30) * 10 + 50, curHeight))
+			local setSize = CCSize(math.random(10, 30) * 10 + 50, curHeight)
+			testLabel:setDimensions(setSize)
 			local size = testLabel:getLabelSize()
-			print("CurSize:"..size.width.." "..size.height)
+			print("CurSize:"..size.width.." "..size.height.." setSize:"..setSize.width.." "..setSize.height)
 		end)
 		label:setPosition(display.right - 100, display.top - 50)
 	end
@@ -60,7 +61,11 @@ function MainScene:addTestLabel(text, callback)
 	local labelBtn = CCLabelTTF:create(text, "Arial", 30)
 	self:addChild(labelBtn)
 	labelBtn:setTouchEnabled(true)
-    labelBtn:addTouchEventListener(function(event, x, y)
+
+    labelBtn:addNodeEventListener(cc.NODE_TOUCH_EVENT, function(eventDic)
+    	local event = eventDic.name
+    	local x = eventDic.x
+    	local y = eventDic.y
         if event == "began" then
             labelBtn:setScale(labelBtn:getScale() * 0.9)
             return true -- catch touch event, stop event dispatching

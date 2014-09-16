@@ -74,8 +74,8 @@ function RichLabel:setLabelString(text)
 	end
 
 	self._labelStatus = 1 --未开始
+	self:removeNodeEventListenersByEvent(cc.NODE_ENTER_FRAME_EVENT)
 	self:unscheduleUpdate() --init
-	-- self:removeNodeEventListenersByTag(99)
 
 	self._textStr = text
 	
@@ -118,8 +118,10 @@ end
 
 --强制停止播放动画
 function RichLabel:playEnded()
+	print("play ended")
+	self:removeNodeEventListenersByEvent(cc.NODE_ENTER_FRAME_EVENT)
 	self:unscheduleUpdate()
-	-- self:removeNodeEventListenersByTag(99)
+
 	self._labelStatus = 3 --播放完毕
 	for i, sprite in ipairs(self._spriteArray) do
 		sprite:stopActionByTag(99)
@@ -176,8 +178,8 @@ function RichLabel:playFadeInAnim(wordPerSec)
 
 		                else --最后一个点
 		                	self._labelStatus = 3 --播放完毕
+		                	self:removeNodeEventListenersByEvent(cc.NODE_ENTER_FRAME_EVENT)
 		                	self:unscheduleUpdate()
-		                	-- self:removeNodeEventListenersByTag(99)
 		                end
 
 	                	if index >= curIntIndex then
@@ -198,10 +200,10 @@ function RichLabel:playFadeInAnim(wordPerSec)
 		       
 		    end
 		    
-		    -- self:removeNodeEventListenersByTag(99)
-		    -- self:addNodeEventListener(cc.NODE_ENTER_FRAME_EVENT, updatePosition, 99) 
+		    self:removeNodeEventListenersByEvent(cc.NODE_ENTER_FRAME_EVENT)
 		    self:unscheduleUpdate()
-		    self:scheduleUpdate(updatePosition)
+		    self:addNodeEventListener(cc.NODE_ENTER_FRAME_EVENT, updatePosition) 
+		    self:scheduleUpdate_()
 		end
 	end
 end
