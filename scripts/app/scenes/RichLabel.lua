@@ -162,7 +162,6 @@ function RichLabel:playFadeInAnim(wordPerSec)
 			end
 
 		    local function updatePosition(dt)
-		    	print("update:"..dt)
 
 		                curTime = curTime + dt
 
