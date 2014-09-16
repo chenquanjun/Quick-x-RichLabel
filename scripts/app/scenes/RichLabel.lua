@@ -29,6 +29,9 @@ RichLabel._textStr = nil
 RichLabel._maxWidth = nil
 RichLabel._maxHeight = nil
 
+--播放状态 1 表示未开始 2 表示播放中 3 表示已经播放完毕 
+RichLabel._labelStatus = 1
+
 --[[-------------------
     ---Public Method-----
     ---------------------]]
@@ -70,6 +73,10 @@ function RichLabel:setLabelString(text)
 		self._containLayer:removeAllChildren()
 	end
 
+	self._labelStatus = 1 --未开始
+	self:unscheduleUpdate() --init
+	-- self:removeNodeEventListenersByTag(99)
+
 	self._textStr = text
 	
 	--转化好的数组
@@ -98,6 +105,106 @@ function RichLabel:getLabelSize()
 	local width = self._maxWidth or 0
 	local height = self._maxHeight or 0
 	return CCSize(width, height)
+end
+
+--是否在播放动画
+function RichLabel:isRunningAmim()
+	local isRunning = false
+	if self._labelStatus == 2 then
+		isRunning = true
+	end
+	return isRunning
+end
+
+--强制停止播放动画
+function RichLabel:playEnded()
+	self:unscheduleUpdate()
+	-- self:removeNodeEventListenersByTag(99)
+	self._labelStatus = 3 --播放完毕
+	for i, sprite in ipairs(self._spriteArray) do
+		sprite:stopActionByTag(99)
+		sprite:setOpacity(255)
+	end
+end
+
+--播放fade in 动画
+function RichLabel:playFadeInAnim(wordPerSec)
+	local spriteArray = self._spriteArray
+
+	if spriteArray then
+
+		if self._labelStatus == 2 then --上一个动画播放中
+			self:playEnded()
+		end
+
+		self._labelStatus = 2--播放中
+
+		wordPerSec = wordPerSec or 15 --每秒多少个字
+
+		local delay = 1 / wordPerSec
+
+		do -- next action
+			local curTime = 0
+
+			local totalNum = #spriteArray
+
+			if totalNum == 0 then
+				self._labelStatus = 3 --播放完毕
+				return
+			end
+
+			local totalTime = totalNum * delay
+			local curIntIndex = 1
+
+			--init
+			for i, sprite in ipairs(spriteArray) do
+				sprite:setOpacity(0)
+			end
+
+		    local function updatePosition(dt)
+		    	print("update:"..dt)
+
+		                curTime = curTime + dt
+
+		                --这个类似动作里面的update的time参数
+		                local time = curTime / totalTime
+
+		                local fIndex = (totalNum - 1) * time + 1 --从1开始
+		                local index  = math.floor(fIndex)
+
+		                if index < totalNum then
+
+
+		                else --最后一个点
+		                	self._labelStatus = 3 --播放完毕
+		                	self:unscheduleUpdate()
+		                	-- self:removeNodeEventListenersByTag(99)
+		                end
+
+	                	if index >= curIntIndex then
+	                		for i = curIntIndex, index do
+	                			local sprite = spriteArray[i]
+	                			
+	                			if sprite then
+	                				local action = CCFadeIn:create(0.2)
+	                				action:setTag(99)
+	                				sprite:runAction(action)
+	                			else
+	                				print("Error: sprite not exist")
+	                			end
+	                		end
+
+	                		curIntIndex = index + 1
+	                	end
+		       
+		    end
+		    
+		    -- self:removeNodeEventListenersByTag(99)
+		    -- self:addNodeEventListener(cc.NODE_ENTER_FRAME_EVENT, updatePosition, 99) 
+		    self:unscheduleUpdate()
+		    self:scheduleUpdate(updatePosition)
+		end
+	end
 end
 
 --[[-------------------
