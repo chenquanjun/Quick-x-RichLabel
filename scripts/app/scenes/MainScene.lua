@@ -27,12 +27,61 @@ function MainScene:test()
 	self:addChild(testLabel)
 	testLabel:setPosition(display.cx - 100, display.cy)
 
+	--提示信息
+	local infoLabel = CCLabelTTF:create("", "Arial", 30)
+	self:addChild(infoLabel)
+	infoLabel:setPosition(display.cx, display.bottom + 50)
+
+	local function addLog(text)
+		print(text)
+		infoLabel:setString(text)
+	end
+		
 	do --大小测试
+		local contentBg
+		local textBg
+
+		local function setBgSprite(contentSize, textSize)
+
+			if contentBg then
+				self:removeChild(contentBg, true)
+				self:removeChild(textBg, true)
+				contentBg = nil
+				textBg = nil
+			end
+
+			contentBg = CCSprite:createWithTexture(nil, CCRect(0, 0, contentSize.width, contentSize.height))
+			textBg = CCSprite:createWithTexture(nil, CCRect(0, 0, textSize.width, textSize.height))
+
+			contentBg:setColor(ccc3(200, 200, 200))
+			textBg:setColor(ccc3(100, 100, 100))
+
+			contentBg:setAnchorPoint(ccp(0, 1))
+			textBg:setAnchorPoint(ccp(0, 1))
+
+			contentBg:setPosition(display.cx - 100, display.cy)
+			textBg:setPosition(display.cx - 100, display.cy)
+
+			self:addChild(contentBg, -1)
+			self:addChild(textBg, -1)
+
+			self:stopAllActions()
+			self:performWithDelay(function ()
+				self:removeChild(contentBg, true)
+				self:removeChild(textBg, true)
+				contentBg = nil
+				textBg = nil
+			end, 2)
+		end
+
 		local label = self:addTestLabel("大小测试", function ()
-			local setSize = CCSize(math.random(10, 30) * 10 + 50, curHeight)
-			testLabel:setDimensions(setSize)
-			local size = testLabel:getLabelSize()
-			print("CurSize:"..size.width.." "..size.height.." setSize:"..setSize.width.." "..setSize.height)
+			local contentSize = CCSize(math.random(10, 30) * 10 + 50, curHeight)
+			testLabel:setDimensions(contentSize)
+			local textSize = testLabel:getLabelSize()
+			local logStr = "TextSize:"..textSize.width.." "..textSize.height.." setSize:"..contentSize.width.." "..contentSize.height
+			addLog(logStr)
+			setBgSprite(contentSize, textSize)
+
 		end)
 		label:setPosition(display.right - 100, display.top - 50)
 	end
@@ -42,7 +91,7 @@ function MainScene:test()
 			testLabel:setLabelString(strArr[math.random(1,#strArr)])
 		
 			local size = testLabel:getLabelSize()
-			print("CurSize:"..size.width.." "..size.height)
+			addLog("设置文字测试: TextSize:"..size.width.." "..size.height)
 		end)
 		label:setPosition(display.right - 100, display.top - 100)
 	end

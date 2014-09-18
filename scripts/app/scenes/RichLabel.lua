@@ -242,9 +242,10 @@ function RichLabel:getSizeOfSprites_(spriteArray)
 
 	--精灵的尺寸
 	for i, sprite in ipairs(spriteArray) do
-		local contentSize = sprite:getContentSize()
-		widthArr[i] = contentSize.width
-		heightArr[i] = contentSize.height
+		-- local contentSize = sprite:getContentSize()
+		local rect = sprite:getBoundingBox()
+		widthArr[i] = rect.size.width
+		heightArr[i] = rect.size.height
 	end
 	return widthArr, heightArr
 
